@@ -17,14 +17,18 @@ export const login = async (req: Request, res: Response) => {
       console.error('Login error: Password mismatch', { username });
       return res.status(401).json({ message: 'Invalid credentials' });
     }
+    if (!process.env.JWT_SECRET) {
+      console.error('Login error: JWT_SECRET is missing');
+      return res.status(500).json({ message: 'Server misconfiguration: JWT secret missing' });
+    }
     const token = jwt.sign(
       { id: librarian._id, username: librarian.username },
-      process.env.JWT_SECRET || '',
+      process.env.JWT_SECRET,
       { expiresIn: '8h' }
     );
     res.json({ token, librarian: { id: librarian._id, username: librarian.username, email: librarian.email } });
   } catch (error) {
-    console.error('Login server error:', error);
-    res.status(500).json({ message: 'Server error', error });
+    console.error('Login server error:', error && error.stack ? error.stack : error);
+    res.status(500).json({ message: 'Server error', error: error && error.message ? error.message : error });
   }
 };
