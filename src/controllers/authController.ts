@@ -27,8 +27,10 @@ export const login = async (req: Request, res: Response) => {
       { expiresIn: '8h' }
     );
     res.json({ token, librarian: { id: librarian._id, username: librarian.username, email: librarian.email } });
-  } catch (error) {
-    console.error('Login server error:', error && error.stack ? error.stack : error);
-    res.status(500).json({ message: 'Server error', error: error && error.message ? error.message : error });
+  } catch (error: any) {
+    const stack = error && typeof error === 'object' && 'stack' in error ? (error as any).stack : String(error);
+    const message = error && typeof error === 'object' && 'message' in error ? (error as any).message : String(error);
+    console.error('Login server error:', stack);
+    res.status(500).json({ message: 'Server error', error: message });
   }
 };
