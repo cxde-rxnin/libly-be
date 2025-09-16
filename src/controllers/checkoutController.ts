@@ -82,3 +82,12 @@ export const sendOverdueEmails = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error sending overdue emails', error });
   }
 };
+
+export const getAllCheckouts = async (req: Request, res: Response) => {
+  try {
+    const checkouts = await Checkout.find().populate('userId').populate('bookId');
+    res.json(checkouts);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching checkouts', error });
+  }
+};

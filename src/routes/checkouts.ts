@@ -1,7 +1,7 @@
 import { Router } from 'express';
 const router = Router();
 import { authenticateJWT } from '../middleware/auth';
-import { checkoutBook, returnBook, getOverdueCheckouts, sendOverdueEmails } from '../controllers/checkoutController';
+import { checkoutBook, returnBook, getOverdueCheckouts, sendOverdueEmails, getAllCheckouts } from '../controllers/checkoutController';
 const { body } = require('express-validator');
 import { validate } from '../middleware/validation';
 
@@ -20,5 +20,6 @@ router.post('/',
 router.put('/:id/return', returnBook);
 router.get('/overdue', getOverdueCheckouts);
 router.post('/send-overdue-emails', sendOverdueEmails);
+router.get('/', getAllCheckouts);
 
 export default router;
