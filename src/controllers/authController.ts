@@ -9,10 +9,12 @@ export const login = async (req: Request, res: Response) => {
   try {
     const librarian = await Librarian.findOne({ username });
     if (!librarian) {
+      console.error('Login error: Librarian not found', { username });
       return res.status(401).json({ message: 'Invalid credentials' });
     }
     const isMatch = await bcrypt.compare(password, librarian.passwordHash);
     if (!isMatch) {
+      console.error('Login error: Password mismatch', { username });
       return res.status(401).json({ message: 'Invalid credentials' });
     }
     const token = jwt.sign(
@@ -22,6 +24,7 @@ export const login = async (req: Request, res: Response) => {
     );
     res.json({ token, librarian: { id: librarian._id, username: librarian.username, email: librarian.email } });
   } catch (error) {
+    console.error('Login server error:', error);
     res.status(500).json({ message: 'Server error', error });
   }
 };
